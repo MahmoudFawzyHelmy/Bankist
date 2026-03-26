@@ -70,7 +70,7 @@ btnScrollTo.addEventListener('click', function (e) {
 // 1. Add event listener to common parent element
 // 2. Determine what element originated the event
 document.querySelector('.nav__links').addEventListener('click', function (e) {
-  console.log(e.target);
+
   e.preventDefault();
   // Matching Strategy
   if (e.target.classList.contains('nav__link')) {
@@ -78,3 +78,24 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
 });
+
+// tabes component
+const tabs = document.querySelectorAll(".operations__tab")
+const tabContainer = document.querySelector(".operations__tab-container")
+const tabContent = document.querySelectorAll(".operations__content")
+ 
+tabContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest('.operations__tab')
+  console.log(clicked);
+  // Guard clause
+  if (!clicked) return
+  
+  // Remove classes
+  tabs.forEach(ts => ts.classList.remove("operations__tab--active"))
+tabContent.forEach(tc=> tc.classList.remove("operations__content--active"))
+  // Active tab
+  clicked.classList.add('operations__tab--active')
+
+  // Activate content are 
+  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add("operations__content--active")
+})
