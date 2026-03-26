@@ -117,4 +117,46 @@ const handelHover = function (e) {
 
 nav.addEventListener("mouseover", handelHover.bind(0.5)
   )
-nav.addEventListener("mouseout",handelHover.bind(1))
+nav.addEventListener("mouseout", handelHover.bind(1))
+
+// sticky navigation
+// const initalCoords = section1.getBoundingClientRect()
+// window.addEventListener("scroll", function () {
+//   if (this.window.scrollY >= initalCoords.top) {
+//     nav.classList.add("sticky")
+//   } else {
+//     nav.classList.remove("sticky")
+//   }
+// })
+
+const header = document.querySelector(".header")
+const navHeight = nav.getBoundingClientRect().height;
+const stickNav = function (entries) {
+  const [enrty] = entries
+  if (!enrty.isIntersecting) nav.classList.add("sticky")
+  else nav.classList.remove("sticky")
+  
+}
+const headerObserve = new IntersectionObserver(stickNav, {
+  root: null, 
+  threshold: 0, 
+  rootMargin:`-${navHeight}px`
+})
+headerObserve.observe(header)
+
+// Reval section
+const allSection = document.querySelectorAll(".section")
+const revalSection = function (entries, observer) {
+  const [enrty] = entries
+  if (!enrty.isIntersecting) return; 
+  enrty.target.classList.remove("section--hidden")
+observer.unobserv(enrty.target)
+}
+const sectionObserve = new IntersectionObserver(revalSection, {
+  root: null, 
+  threshold: 0.15, 
+})
+allSection.forEach(section => {
+  sectionObserve.observe(section)
+  section.classList.add("section--hidden")
+})
