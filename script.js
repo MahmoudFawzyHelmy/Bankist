@@ -6,10 +6,10 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
-const tabs = document.querySelectorAll(".operations__tab")
-const tabContainer = document.querySelector(".operations__tab-container")
-const tabContent = document.querySelectorAll(".operations__content")
-const nav = document.querySelector(".nav")
+const tabs = document.querySelectorAll('.operations__tab');
+const tabContainer = document.querySelector('.operations__tab-container');
+const tabContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
 ///////////////////////////////////////
 // Modal window
 
@@ -73,7 +73,6 @@ btnScrollTo.addEventListener('click', function (e) {
 // 1. Add event listener to common parent element
 // 2. Determine what element originated the event
 document.querySelector('.nav__links').addEventListener('click', function (e) {
-
   e.preventDefault();
   // Matching Strategy
   if (e.target.classList.contains('nav__link')) {
@@ -84,40 +83,39 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 
 // tabes component
 
- 
-tabContainer.addEventListener("click", function (e) {
-  const clicked = e.target.closest('.operations__tab')
+tabContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
 
   // Guard clause
-  if (!clicked) return
-  
+  if (!clicked) return;
+
   // Remove classes
-  tabs.forEach(ts => ts.classList.remove("operations__tab--active"))
-tabContent.forEach(tc=> tc.classList.remove("operations__content--active"))
+  tabs.forEach(ts => ts.classList.remove('operations__tab--active'));
+  tabContent.forEach(tc => tc.classList.remove('operations__content--active'));
   // Active tab
-  clicked.classList.add('operations__tab--active')
+  clicked.classList.add('operations__tab--active');
 
-  // Activate content are 
-  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add("operations__content--active")
-})
-
+  // Activate content are
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
 
 // Menu Fade
 const handelHover = function (e) {
-  if (e.target.classList.contains("nav__link")) {
-    const link = e.target; 
-    const siblings = link.closest(".nav").querySelectorAll(".nav__link")
-    const logo = link.closest(".nav").querySelector("img")
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
     siblings.forEach(el => {
-      if(el !== link) el.style.opacity = this
-    })
-    logo.style.opacity= this
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
   }
-}
+};
 
-nav.addEventListener("mouseover", handelHover.bind(0.5)
-  )
-nav.addEventListener("mouseout", handelHover.bind(1))
+nav.addEventListener('mouseover', handelHover.bind(0.5));
+nav.addEventListener('mouseout', handelHover.bind(1));
 
 // sticky navigation
 // const initalCoords = section1.getBoundingClientRect()
@@ -129,34 +127,52 @@ nav.addEventListener("mouseout", handelHover.bind(1))
 //   }
 // })
 
-const header = document.querySelector(".header")
+const header = document.querySelector('.header');
 const navHeight = nav.getBoundingClientRect().height;
 const stickNav = function (entries) {
-  const [enrty] = entries
-  if (!enrty.isIntersecting) nav.classList.add("sticky")
-  else nav.classList.remove("sticky")
-  
-}
+  const [enrty] = entries;
+  if (!enrty.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
 const headerObserve = new IntersectionObserver(stickNav, {
-  root: null, 
-  threshold: 0, 
-  rootMargin:`-${navHeight}px`
-})
-headerObserve.observe(header)
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+headerObserve.observe(header);
 
 // Reval section
-const allSection = document.querySelectorAll(".section")
+const allSection = document.querySelectorAll('.section');
+
 const revalSection = function (entries, observer) {
-  const [enrty] = entries
-  if (!enrty.isIntersecting) return; 
-  enrty.target.classList.remove("section--hidden")
-observer.unobserv(enrty.target)
-}
+  entries.forEach(enrty => {
+    if (!enrty.isIntersecting) return;
+    enrty.target.classList.remove('section--hidden');
+    observer.unobserve(enrty.target);
+  });
+};
 const sectionObserve = new IntersectionObserver(revalSection, {
-  root: null, 
-  threshold: 0.15, 
-})
+  root: null,
+  threshold: 0.15,
+});
 allSection.forEach(section => {
-  sectionObserve.observe(section)
-  section.classList.add("section--hidden")
+  sectionObserve.observe(section);
+  section.classList.add('section--hidden');
+});
+
+// lazy loaded image 
+const imageTargets = document.querySelectorAll("img[data-src]")
+const loadImage = function (entries, observer) {
+  const [enrty] = entries; 
+  if (!enrty.isIntersecting) return; 
+  // replace src width data-src
+  enrty.target.src = enrty.target.dataset.src; 
+  enrty.target.addEventListener("load", function () {
+    enrty.target.classList.remove("lazy-img")
+  })
+}
+const imageObserver = new IntersectionObserver(loadImage, {
+  root: null,
+  threshold:0
 })
+imageTargets.forEach(img => imageObserver.observe(img))
